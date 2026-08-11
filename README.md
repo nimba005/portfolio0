@@ -1,43 +1,123 @@
-# Eric John Nimba — Personal Portfolio ⚡️
-> Personal portfolio website showcasing my work as a Full-Stack Software Engineer focused on AI, climate technology, and data-driven solutions.
+# Eric John Nimba Portfolio
 
-🌐 Live Website: https://nimba005.github.io  
-🔗 GitHub Profile: https://github.com/nimba005
+Personal portfolio website for Eric John Nimba, focused on full-stack software engineering, AI workflows, automation, climate technology, dashboards, and data-driven systems.
 
-![GitHub stars](https://img.shields.io/github/stars/nimba005/nimba005.github.io)
-![GitHub forks](https://img.shields.io/github/forks/nimba005/nimba005.github.io)
-![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)
-![Website](https://img.shields.io/badge/website-live-yellow)
-![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)
+## What Changed
 
----
+The portfolio has been moved from a single static HTML page into a React + Vite application.
 
-## 🚀 About This Portfolio
-This portfolio highlights my work in:
+The new structure is:
 
-- Full-Stack Web Development
-- AI & Data Systems
-- Climate & Sustainability Platforms
-- GIS and Data Visualization Tools
-- Policy and Climate Data Platforms
+- `index.html` - Vite entry HTML and SEO metadata
+- `src/App.jsx` - main React portfolio content
+- `src/main.jsx` - React app entry point
+- `src/styles.css` - clean responsive UI styling
+- `assets/` - existing images, favicon files, and CV assets
 
-It is designed to be fast, responsive, and easy to update as projects evolve.
+## New UI Direction
 
----
+The new portfolio uses:
 
-## ✨ Features
-✔ Fully responsive design  
-✔ Clean and modern interface  
-✔ Easy customization  
-✔ Project showcase section  
-✔ Skills and experience overview  
-✔ Contact section for collaboration opportunities  
-✔ Optimized for performance and accessibility  
+- the original left-sidebar desktop identity
+- a hamburger menu on tablet and mobile screens
+- a stronger hero background with warm gold and deep emerald contrast
+- clean light section backgrounds
+- stronger hero copy
+- clearer section hierarchy
+- project cards with practical impact statements
+- project category filtering
+- cleaner skills grouping
+- stronger contact call to action
+- responsive layouts for desktop and mobile
 
----
+## Run Locally
 
-## 📦 Installation & Deployment
+From Windows PowerShell:
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/nimba005/nimba005.github.io.git
+```powershell
+cd "C:\Users\Erick\portfolio0"
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite, usually:
+
+```text
+http://localhost:5173
+```
+
+## Build For Deployment
+
+```powershell
+cd "C:\Users\Erick\portfolio0"
+npm run build
+```
+
+The production files will be generated in:
+
+```text
+dist/
+```
+
+## Preview Production Build
+
+```powershell
+npm run preview
+```
+
+## Content Updates
+
+Most visible portfolio content is now controlled in:
+
+```text
+src/App.jsx
+```
+
+Update these arrays to change the content:
+
+- `projects`
+- `work`
+- `skills`
+- `experience`
+- `education`
+
+Update the visual design in:
+
+```text
+src/styles.css
+```
+
+## Profile Image
+
+The current profile image is:
+
+```text
+assets/img/passport-new.jpg
+```
+
+To change it, replace that file with your new photo and keep the same file name:
+
+```text
+passport-new.jpg
+```
+
+Recommended image style:
+
+- clear professional headshot
+- square image if possible
+- at least 600 x 600 pixels
+- JPG format
+
+## Existing Assets
+
+Only the images used by the React portfolio are kept in:
+
+```text
+assets/
+```
+
+The current CV link points to:
+
+```text
+assets/resume/Nimba_CV.pdf
+```
