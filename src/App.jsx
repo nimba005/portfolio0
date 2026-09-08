@@ -1,4 +1,15 @@
 import { useMemo, useState } from 'react';
+import agnesLogo from '../assets/img/agnes-logo.png';
+import agnesNegotiationAssistant from '../assets/img/agnes-negotiation-assistant.png';
+import climateVerdict from '../assets/img/climate-verdict.png';
+import cmat from '../assets/img/cmat.png';
+import copia from '../assets/img/copia.jpg';
+import futuristicWallpaper from '../assets/img/futuristic-wallpaper.jpg';
+import hng from '../assets/img/hng.jpg';
+import merl from '../assets/img/merl.png';
+import ndcScorecard from '../assets/img/ndc-scorecard.png';
+import passportNew from '../assets/img/passport-new.jpg';
+import cv from '../assets/resume/Nimba_CV.pdf';
 
 const navItems = [
   ['About', '#about', 'person'],
@@ -7,7 +18,7 @@ const navItems = [
   ['Skills', '#skills', 'build'],
   ['Education', '#education', 'school'],
   ['Contact', '#contact', 'mail'],
-  ['Curriculum Vitae', '/assets/resume/Nimba_CV.pdf', 'description'],
+  ['Curriculum Vitae', cv, 'description'],
 ];
 
 const heroHighlights = [
@@ -31,7 +42,7 @@ const aboutCards = [
 
 const experience = [
   {
-    logo: '/assets/img/agnes-logo.png',
+    logo: agnesLogo,
     company: 'African Group of Negotiators Experts Support',
     role: 'Full-Stack Software Engineer and ICT Assistant',
     period: 'Aug 2025 - Present',
@@ -41,7 +52,7 @@ const experience = [
     ],
   },
   {
-    logo: '/assets/img/hng.jpg',
+    logo: hng,
     company: 'HNG Tech',
     role: 'Frontend Developer Intern',
     period: 'Jan 2025 - Apr 2025',
@@ -51,7 +62,7 @@ const experience = [
     ],
   },
   {
-    logo: '/assets/img/copia.jpg',
+    logo: copia,
     company: 'Copia Global',
     role: 'Frontend Developer Intern',
     period: 'Jun 2020 - Aug 2022',
@@ -68,7 +79,7 @@ const projects = [
   {
     title: 'NDC Capacity Scorecard',
     category: 'Climate Tech',
-    image: '/assets/img/ndc-scorecard.png',
+    image: ndcScorecard,
     summary:
       'Assessment and intelligence platform for tracking NDC development and implementation readiness.',
     details:
@@ -79,7 +90,7 @@ const projects = [
   {
     title: 'CMAT Platforms',
     category: 'Climate Tech',
-    image: '/assets/img/cmat.png',
+    image: cmat,
     summary:
       'Climate monitoring and analytics tools for tracking actions, emissions, policy data, and reporting.',
     details:
@@ -90,7 +101,7 @@ const projects = [
   {
     title: 'MERL System',
     category: 'Systems',
-    image: '/assets/img/merl.png',
+    image: merl,
     summary:
       'Monitoring, Evaluation, Reporting and Learning platform for climate project management.',
     details:
@@ -101,7 +112,7 @@ const projects = [
   {
     title: 'Africa Climate Negotiation Assistant',
     category: 'AI',
-    image: '/assets/img/agnes-negotiation-assistant.png',
+    image: agnesNegotiationAssistant,
     summary:
       'AI support tool for climate negotiation context, references, and structured knowledge access.',
     details:
@@ -112,7 +123,7 @@ const projects = [
   {
     title: 'Climate Verdict',
     category: 'AI',
-    image: '/assets/img/climate-verdict.png',
+    image: climateVerdict,
     summary:
       'AI tool for reviewing climate laws, policies, and documents for research and interpretation.',
     details:
@@ -123,7 +134,7 @@ const projects = [
   {
     title: 'Portfolio Revamp',
     category: 'Systems',
-    image: '/assets/img/futuristic-wallpaper.jpg',
+    image: futuristicWallpaper,
     summary:
       'A React-powered portfolio built to present my work with a clean, professional user experience.',
     details:
@@ -171,7 +182,7 @@ function SideNav() {
       <nav className="desktop-nav" aria-label="Main navigation">
         <div className="side-nav">
           <a className="sidebar-logo" href="#top" aria-label="Eric John Nimba home">
-            <img className="profile-pic" src="/assets/img/passport-new.jpg" alt="Eric John Nimba" />
+            <img className="profile-pic" src={passportNew} alt="Eric John Nimba" />
             <span className="sidebar-name">Eric John Nimba</span>
             <span className="sidebar-role">AI & Automation | Climate Tech</span>
           </a>
@@ -256,7 +267,7 @@ function Hero() {
           <div className="buttons">
             <a className="readme" href="#projects">View Projects</a>
             <a className="contactme" href="#contact">Contact Me</a>
-            <a className="contactme secondary-action" href="/assets/resume/Nimba_CV.pdf" target="_blank" rel="noreferrer">View CV</a>
+            <a className="contactme secondary-action" href={cv} target="_blank" rel="noreferrer">View CV</a>
           </div>
         </div>
       </div>
