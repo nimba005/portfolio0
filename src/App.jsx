@@ -16,7 +16,6 @@ import genderHotspotMap from '../assets/img/projects/gender-hotspot-map.png';
 import ipccSummary from '../assets/img/projects/ipcc-summary.png';
 import merl from '../assets/img/projects/merl.png';
 import ndcScorecard from '../assets/img/projects/ndc-scorecard.png';
-import portfolio from '../assets/img/projects/portfolio.jpg';
 import scacafEhub from '../assets/img/projects/scacaf-ehub.png';
 
 // Served from public/ so the URLs stay stable for search engines and shared links.
@@ -107,7 +106,7 @@ const featuredProject = {
   url: agnesHub,
 };
 
-const filters = ['All', 'AI', 'Climate Tech', 'Monitoring', 'Systems'];
+const filters = ['All', 'AI', 'Climate Tech', 'Monitoring'];
 
 const projects = [
   {
@@ -206,15 +205,6 @@ const projects = [
       { name: 'Nigeria', image: cmatNigeria, url: `${agnesHub}#national-accountability`, linkLabel: viaHub },
       { name: "Côte d'Ivoire", image: cmatCoteDivoire, url: 'https://cmat-c-te-d-ivoire.onrender.com/' },
     ],
-  },
-  {
-    title: 'Portfolio',
-    category: 'Systems',
-    image: portfolio,
-    summary: 'This site: a pre-rendered React portfolio built for speed, accessibility, and search visibility.',
-    details: 'Build-time pre-rendering, structured data, and a responsive layout from phone to desktop.',
-    tags: ['React', 'Vite', 'SEO'],
-    url: '#top',
   },
 ];
 
