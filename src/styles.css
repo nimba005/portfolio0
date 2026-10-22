@@ -653,7 +653,7 @@ small {
   font-size: 0.92rem;
 }
 
-.card-action a {
+.project-link {
   display: inline-flex;
   flex: 0 0 auto;
   min-height: 44px;
@@ -671,12 +671,12 @@ small {
   box-shadow: 0 8px 20px rgba(6, 63, 54, 0.18);
 }
 
-.card-action a .material-icons {
+.project-link .material-icons {
   font-size: 1.05rem;
   transition: transform 0.2s ease;
 }
 
-.card-action a:hover {
+.project-link:hover {
   border-color: var(--accent-deep);
   background: var(--accent-deep);
   color: #ffffff;
@@ -684,14 +684,96 @@ small {
   transform: translateY(-2px);
 }
 
-.card-action a:focus-visible,
+.project-link:focus-visible,
 .publication-read:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
-.card-action a:hover .material-icons {
-  transform: translateX(3px);
+.project-link:hover .material-icons {
+  transform: translate(2px, -2px);
+}
+
+.featured-project {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+
+.featured-project .card-image {
+  height: 100%;
+  aspect-ratio: auto;
+  min-height: 320px;
+  border-right: 1px solid rgba(19, 49, 39, 0.06);
+  border-bottom: 0;
+}
+
+.featured-project:hover .card-image img {
+  transform: translateY(-3px) scale(1.015);
+}
+
+.featured-project .card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+}
+
+.featured-project h3 {
+  margin-bottom: 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+
+.featured-points {
+  margin: 0 0 4px;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.featured-points li::marker {
+  color: var(--accent-deep);
+}
+
+.featured-action {
+  margin-top: 22px;
+}
+
+.country-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.country-switch button {
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 13px;
+  background: var(--surface-strong);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.country-switch button:hover {
+  border-color: var(--brand-dark);
+  color: var(--brand-dark);
+}
+
+.country-switch button.active {
+  border-color: var(--brand-dark);
+  background: var(--brand-dark);
+  color: #ffffff;
+}
+
+.country-switch button:focus-visible,
+.filter-row button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .publications-grid {
@@ -1069,6 +1151,21 @@ small {
     min-height: auto;
     padding-top: 88px;
     padding-bottom: 72px;
+  }
+
+  .featured-project {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-project .card-image {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+    border-right: 0;
+    border-bottom: 1px solid rgba(19, 49, 39, 0.06);
+  }
+
+  .featured-project .card-content {
+    padding: 24px;
   }
 
   .about-grid,
