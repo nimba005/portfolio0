@@ -237,11 +237,97 @@ const publications = [
   },
 ];
 
-const skills = [
-  ['Frontend', ['React', 'Next.js', 'JavaScript', 'TypeScript', 'HTML', 'CSS', 'Responsive UI']],
-  ['Backend', ['Django', 'Flask', 'Node.js', 'Laravel', 'REST APIs', 'Authentication']],
-  ['AI and Data', ['RAG systems', 'Prompt engineering', 'Dashboards', 'Evidence workflows', 'Automation']],
-  ['Databases and Deployment', ['PostgreSQL', 'MySQL', 'MongoDB', 'GitHub', 'Vercel', 'Render', 'cPanel']],
+// Technology logos from Devicon (MIT), keyed by file name, e.g. 'react' -> assets/img/skills/react.svg.
+const skillLogos = Object.fromEntries(
+  Object.entries(import.meta.glob('../assets/img/skills/*.svg', { eager: true, import: 'default' })).map(
+    ([path, url]) => [path.split('/').pop().replace('.svg', ''), url],
+  ),
+);
+
+// Each skill is [label] or [label, logo name].
+const skillGroups = [
+  {
+    title: 'Frontend',
+    icon: 'web',
+    description: 'Responsive, accessible interfaces for dashboards and data-heavy products.',
+    skills: [
+      ['React', 'react'],
+      ['Next.js', 'nextjs'],
+      ['JavaScript', 'javascript'],
+      ['TypeScript', 'typescript'],
+      ['HTML5', 'html5'],
+      ['CSS3', 'css3'],
+      ['Responsive UI'],
+      ['Accessibility'],
+      ['SEO'],
+    ],
+  },
+  {
+    title: 'Backend & APIs',
+    icon: 'dns',
+    description: 'Reliable services, REST APIs, and secure access for multi-user platforms.',
+    skills: [
+      ['Python', 'python'],
+      ['Django', 'django'],
+      ['Flask', 'flask'],
+      ['Node.js', 'nodejs'],
+      ['Laravel', 'laravel'],
+      ['REST APIs'],
+      ['Authentication'],
+    ],
+  },
+  {
+    title: 'AI & Data',
+    icon: 'psychology',
+    description: 'Grounded AI assistants and data workflows that turn documents into decisions.',
+    skills: [
+      ['RAG systems'],
+      ['Prompt engineering'],
+      ['Document retrieval'],
+      ['AI summarisation'],
+      ['Dashboards'],
+      ['Evidence workflows'],
+      ['Automation'],
+    ],
+  },
+  {
+    title: 'Databases',
+    icon: 'storage',
+    description: 'Data models designed for tracking, reporting, and analysis.',
+    skills: [
+      ['PostgreSQL', 'postgresql'],
+      ['MySQL', 'mysql'],
+      ['MongoDB', 'mongodb'],
+      ['SQL'],
+      ['Data modelling'],
+    ],
+  },
+  {
+    title: 'Cloud & DevOps',
+    icon: 'cloud_done',
+    description: 'Shipping, hosting, and maintaining production platforms.',
+    skills: [
+      ['Git', 'git'],
+      ['GitHub', 'github'],
+      ['Azure', 'azure'],
+      ['Vercel', 'vercel'],
+      ['Render'],
+      ['cPanel'],
+    ],
+  },
+  {
+    title: 'Climate Domain',
+    icon: 'public',
+    description: 'Policy context that shapes what gets built and who it serves.',
+    skills: [
+      ['Climate policy & NDCs'],
+      ['UNFCCC negotiations'],
+      ['MERL'],
+      ['Climate finance'],
+      ['Parliamentary oversight'],
+      ['Gender & climate'],
+    ],
+  },
 ];
 
 const linkedInUrl = 'https://www.linkedin.com/in/eric-nimba-4141592b1/';
@@ -648,17 +734,30 @@ function Skills() {
     <section id="skills" className="section">
       <div className="container">
         <SectionTitle>Skills</SectionTitle>
+        <p className="section-lead">
+          A full-stack toolkit for building AI-assisted, data-driven platforms, grounded in the climate policy context
+          they serve.
+        </p>
         <div className="skills-grid">
-          {skills.map(([group, items]) => (
-            <article className="card skill-cluster" key={group}>
-              <div className="card-content">
-                <h3>{group}</h3>
-                <div className="skill-pills">
-                  {items.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
+          {skillGroups.map((group) => (
+            <article className="card skill-card" key={group.title}>
+              <div className="skill-card-head">
+                <span className="skill-icon material-icons" aria-hidden="true">{group.icon}</span>
+                <h3>{group.title}</h3>
               </div>
+              <p>{group.description}</p>
+              <ul className="skill-list">
+                {group.skills.map(([label, logo]) => (
+                  <li className="skill-chip" key={label}>
+                    {logo ? (
+                      <img src={skillLogos[logo]} alt="" width="18" height="18" loading="lazy" decoding="async" />
+                    ) : (
+                      <span className="skill-dot" aria-hidden="true" />
+                    )}
+                    {label}
+                  </li>
+                ))}
+              </ul>
             </article>
           ))}
         </div>
