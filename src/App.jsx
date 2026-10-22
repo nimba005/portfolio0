@@ -9,9 +9,11 @@ import hng from '../assets/img/hng.jpg';
 import merl from '../assets/img/merl.png';
 import ndcScorecard from '../assets/img/ndc-scorecard.png';
 import passportNew from '../assets/img/passport-new.jpg';
-import cv from '../assets/resume/Nimba_CV.pdf';
-import auditableAiCommentary from '../assets/publications/auditable-ai-commentary.pdf';
-import climateEvidenceCommentary from '../assets/publications/climate-evidence-commentary.pdf';
+
+// Served from public/ so the URLs stay stable for search engines and shared links.
+const cv = '/Eric-John-Nimba-CV.pdf';
+const climateEvidenceCommentary = '/publications/africa-climate-evidence-not-dashboards-eric-nimba.pdf';
+const auditableAiCommentary = '/publications/auditable-ai-african-public-institutions-eric-nimba.pdf';
 
 const navItems = [
   ['About', '#about', 'person'],
@@ -46,7 +48,8 @@ const aboutCards = [
 const experience = [
   {
     logo: agnesLogo,
-    company: 'African Group of Negotiators Experts Support',
+    company: 'African Group of Negotiators Experts Support (AGNES)',
+    url: 'https://www.agnesafrica.org/',
     role: 'Full-Stack Software Engineer and ICT Assistant',
     period: 'Aug 2025 - Present',
     points: [
@@ -271,7 +274,7 @@ function Hero() {
       <div className="overlay" />
       <div className="container">
         <div className="hero-content">
-          <p className="hero-eyebrow">Full-Stack Software Engineer | AI & Automation | Climate Tech</p>
+          <p className="hero-eyebrow">Full-Stack Software Engineer at AGNES | AI & Automation | Climate Tech</p>
           <h1>Eric John Nimba builds practical digital systems for climate research, policy, and decision-making.</h1>
           <p className="hero-role">
             A <span className="typing">full-stack developer turning complex workflows into clear products.</span>
@@ -311,8 +314,9 @@ function About() {
       <div className="container">
         <SectionTitle>About</SectionTitle>
         <p className="section-lead">
-          I am a software engineer focused on building products that are beautiful enough to trust, simple enough to
-          use, and strong enough to support real work.
+          I am Eric John Nimba, a Nairobi-based software engineer at the African Group of Negotiators Experts Support
+          (AGNES), focused on building products that are beautiful enough to trust, simple enough to use, and strong
+          enough to support real work.
         </p>
         <div className="about-grid">
           {aboutCards.map((card) => (
@@ -336,9 +340,15 @@ function Experience() {
           <article className="card experience-card" key={item.company}>
             <div className="card-content">
               <div className="experience-head">
-                <img src={item.logo} alt={`${item.company} logo`} />
+                <img src={item.logo} alt={`${item.company} logo`} loading="lazy" decoding="async" />
                 <div>
-                  <span className="card-title">{item.company}</span>
+                  <h3 className="card-title">
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noopener">{item.company}</a>
+                    ) : (
+                      item.company
+                    )}
+                  </h3>
                   <p className="role">{item.role}</p>
                   <small>{item.period}</small>
                 </div>
@@ -386,7 +396,7 @@ function Projects() {
           {visibleProjects.map((project) => (
             <article className="card project-card" key={project.title}>
               <div className="card-image">
-                <img src={project.image} alt={`${project.title} preview`} />
+                <img src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
               </div>
               <div className="card-content">
                 <span className="project-category">{project.category}</span>

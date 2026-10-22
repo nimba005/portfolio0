@@ -518,6 +518,14 @@ main {
   line-height: 1.35;
 }
 
+.card-title a {
+  color: inherit;
+}
+
+.card-title a:hover {
+  color: var(--accent-deep);
+}
+
 .role {
   margin: 6px 0 10px;
   color: var(--brand-dark) !important;
