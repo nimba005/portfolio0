@@ -4,6 +4,10 @@ services:
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
+    envVars:
+      # Public URL of the analytics service below; baked into the site at build time.
+      - key: VITE_ANALYTICS_URL
+        value: https://portfolio0-analytics.onrender.com
     headers:
       # Vite fingerprints everything it emits to /static, so these can be cached forever.
       - path: /static/*
@@ -18,7 +22,35 @@ services:
       - path: /*
         name: Referrer-Policy
         value: strict-origin-when-cross-origin
+      - path: /admin*
+        name: X-Robots-Tag
+        value: noindex, nofollow
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
+  # Visit analytics API and admin login (see server/README.md).
+  - type: web
+    name: portfolio0-analytics
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ALLOWED_ORIGINS
+        value: https://portfolio0-ugwj.onrender.com
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: TOKEN_SECRET
+        generateValue: true
+      - key: IP_SALT
+        generateValue: true

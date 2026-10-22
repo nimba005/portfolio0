@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { trackEvent } from './analytics.js';
 import agnesLogo from '../assets/img/agnes-logo.png';
 import copia from '../assets/img/copia.jpg';
 import hng from '../assets/img/hng.jpg';
@@ -857,6 +858,7 @@ function ContactForm() {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || String(result.success) !== 'true') throw new Error(result.message);
+      trackEvent('contact', fields.topic);
       form.reset();
       setStatus('sent');
     } catch {

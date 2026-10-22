@@ -1,0 +1,19 @@
+{
+  "name": "portfolio-analytics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Visit analytics and admin API for the Eric John Nimba portfolio.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "geoip-lite": "^2.0.3",
+    "pg": "^8.13.1"
+  }
+}

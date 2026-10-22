@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // /admin reuses this page: hide the pre-rendered portfolio and keep the panel out of search results.
+      if (/^\/admin(\/|$)/.test(location.pathname)) {
+        document.documentElement.setAttribute('data-admin', '');
+        document.write('<meta name="robots" content="noindex, nofollow" />');
+      }
+    </script>
+    <style>
+      html[data-admin] #root > :not(.admin-shell) {
+        display: none;
+      }
+    </style>
     <title>Eric John Nimba | Full-Stack Software Engineer at AGNES</title>
     <meta
       name="description"
