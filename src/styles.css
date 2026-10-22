@@ -589,20 +589,36 @@ small {
   flex-direction: column;
 }
 
+/* Screenshots vary from ~1.2:1 to ~2.1:1, so show each one whole inside a uniform showcase frame. */
 .card-image {
-  height: 220px;
+  display: flex;
+  aspect-ratio: 16 / 10;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  padding: 22px;
+  border-bottom: 1px solid rgba(19, 49, 39, 0.06);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(17, 185, 159, 0.14), transparent 46%),
+    radial-gradient(circle at 86% 92%, rgba(127, 164, 109, 0.16), transparent 42%),
+    linear-gradient(160deg, #eef6f2 0%, #e2efe9 100%);
 }
 
 .card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.35s ease;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 1px solid rgba(19, 49, 39, 0.1);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(18, 46, 37, 0.16);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .project-card:hover .card-image img {
-  transform: scale(1.04);
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 20px 38px rgba(18, 46, 37, 0.2);
 }
 
 .project-category {
@@ -1109,6 +1125,10 @@ small {
   .contact-card,
   .publication-card {
     padding: 22px;
+  }
+
+  .card-image {
+    padding: 14px;
   }
 
   .publication-card h3 {
