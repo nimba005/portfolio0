@@ -10,11 +10,14 @@ import merl from '../assets/img/merl.png';
 import ndcScorecard from '../assets/img/ndc-scorecard.png';
 import passportNew from '../assets/img/passport-new.jpg';
 import cv from '../assets/resume/Nimba_CV.pdf';
+import auditableAiCommentary from '../assets/publications/auditable-ai-commentary.pdf';
+import climateEvidenceCommentary from '../assets/publications/climate-evidence-commentary.pdf';
 
 const navItems = [
   ['About', '#about', 'person'],
   ['Experience', '#experience', 'business_center'],
   ['Projects', '#projects', 'web'],
+  ['Publications', '#publications', 'article'],
   ['Skills', '#skills', 'build'],
   ['Education', '#education', 'school'],
   ['Contact', '#contact', 'mail'],
@@ -141,6 +144,33 @@ const projects = [
       'Keeps the original visual identity while making future UI improvements easier to maintain.',
     tags: ['React', 'Vite', 'UI/UX'],
     url: '#top',
+  },
+];
+
+const publications = [
+  {
+    title: 'Africa Does Not Need Another Climate Dashboard. It Needs Evidence That Projects Deliver.',
+    standfirst:
+      'Why climate-monitoring systems must connect public spending, project evidence and community outcomes.',
+    quote:
+      'The future of climate accountability is not a prettier screen. It is a trustworthy chain of decisions and outcomes.',
+    tags: ['Climate governance', 'MERL', 'Digital public systems'],
+    date: 'October 2026',
+    readTime: '5 min read',
+    file: climateEvidenceCommentary,
+    downloadName: 'Eric_Nimba_Climate_Evidence_Commentary.pdf',
+  },
+  {
+    title: 'An AI Answer Is Not a Policy Decision: The Case for Auditable AI in African Public Institutions',
+    standfirst:
+      'The missing design principles for responsible language-model adoption in public-sector decision support.',
+    quote:
+      'The best policy assistant is not the one that sounds most confident. It is the one that makes evidence visible, limitations legible and human accountability impossible to bypass.',
+    tags: ['AI governance', 'Public sector', 'RAG systems'],
+    date: 'October 2026',
+    readTime: '5 min read',
+    file: auditableAiCommentary,
+    downloadName: 'Eric_Nimba_Auditable_AI_Commentary.pdf',
   },
 ];
 
@@ -383,6 +413,54 @@ function Projects() {
   );
 }
 
+function Publications() {
+  return (
+    <section id="publications" className="section">
+      <div className="container">
+        <SectionTitle>Publications</SectionTitle>
+        <p className="section-lead">
+          Policy commentary on climate accountability, AI governance, and the design of digital systems that
+          public institutions can trust.
+        </p>
+        <div className="publications-grid">
+          {publications.map((item, index) => (
+            <article className="publication-card" key={item.title}>
+              <div className="publication-meta">
+                <span className="publication-number">{String(index + 1).padStart(2, '0')}</span>
+                <span className="publication-type">Policy Commentary</span>
+                <span className="publication-date">
+                  {item.date} · {item.readTime}
+                </span>
+              </div>
+              <h3>
+                <a href={item.file} target="_blank" rel="noreferrer">{item.title}</a>
+              </h3>
+              <p className="publication-standfirst">{item.standfirst}</p>
+              <blockquote className="publication-quote">{item.quote}</blockquote>
+              <div className="skill-pills compact">
+                {item.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+              <div className="publication-actions">
+                <a className="publication-read" href={item.file} target="_blank" rel="noreferrer">
+                  <span>Read commentary</span>
+                  <span className="material-icons" aria-hidden="true">arrow_forward</span>
+                </a>
+                <a className="publication-download" href={item.file} download={item.downloadName}>
+                  <span className="material-icons" aria-hidden="true">download</span>
+                  <span>PDF</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="publication-note">Views expressed are personal and do not represent official AGNES positions.</p>
+      </div>
+    </section>
+  );
+}
+
 function Skills() {
   return (
     <section id="skills" className="section">
@@ -468,6 +546,7 @@ export default function App() {
         <About />
         <Experience />
         <Projects />
+        <Publications />
         <Skills />
         <Education />
         <Contact />
