@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://portfolio0-ugwj.onrender.com/sitemap.xml
+Sitemap: https://ericnimba.dev/sitemap.xml

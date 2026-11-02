@@ -1,5 +1,5 @@
-// Prints an ADMIN_PASSWORD_HASH value for Render. Usage: npm run hash-password -- "your password"
-import { hashPassword } from '../auth.js';
+// Prints an ADMIN_PASSWORD_HASH value for Cloudflare. Usage: npm run hash-password -- "your password"
+import { hashPassword } from '../analytics/crypto.js';
 
 const password = process.argv[2];
 if (!password) {

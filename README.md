@@ -1,123 +1,67 @@
 # Eric John Nimba Portfolio
 
-Personal portfolio website for Eric John Nimba, focused on full-stack software engineering, AI workflows, automation, climate technology, dashboards, and data-driven systems.
+Personal portfolio for Eric John Nimba, Full-Stack Software Engineer at AGNES, live at **https://ericnimba.dev**.
 
-## What Changed
+Built with React and Vite, pre-rendered to static HTML at build time for speed and search visibility, and hosted on Cloudflare Pages. A private analytics dashboard at `/admin` is powered by Cloudflare Pages Functions and Neon Postgres.
 
-The portfolio has been moved from a single static HTML page into a React + Vite application.
+## Project structure
 
-The new structure is:
+| Path | What it holds |
+| --- | --- |
+| `index.html` | Entry HTML, SEO metadata, and structured data |
+| `src/App.jsx` | All portfolio content: projects, publications, skills, education, contact |
+| `src/styles.css` | Portfolio styling |
+| `src/analytics.js` | Visitor tracking (page views, sections, downloads, link clicks, time on site) |
+| `src/admin/` | The `/admin` analytics dashboard, loaded only on that route |
+| `functions/api/` | Cloudflare Pages Functions: `collect`, `admin/login`, `admin/stats`, `admin/export` |
+| `analytics/` | Shared server code for the functions: database, auth, stats |
+| `public/` | Files served as-is: CV, publications, favicons, `robots.txt`, `sitemap.xml`, `_headers` |
+| `assets/img/` | Images imported by the React app |
+| `scripts/` | Build-time pre-rendering and the admin password hash generator |
 
-- `index.html` - Vite entry HTML and SEO metadata
-- `src/App.jsx` - main React portfolio content
-- `src/main.jsx` - React app entry point
-- `src/styles.css` - clean responsive UI styling
-- `assets/` - existing images, favicon files, and CV assets
-
-## New UI Direction
-
-The new portfolio uses:
-
-- the original left-sidebar desktop identity
-- a hamburger menu on tablet and mobile screens
-- a stronger hero background with warm gold and deep emerald contrast
-- clean light section backgrounds
-- stronger hero copy
-- clearer section hierarchy
-- project cards with practical impact statements
-- project category filtering
-- cleaner skills grouping
-- stronger contact call to action
-- responsive layouts for desktop and mobile
-
-## Run Locally
-
-From Windows PowerShell:
+## Run locally
 
 ```powershell
-cd "C:\Users\Erick\portfolio0"
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, usually:
+The site runs at http://localhost:5173. Tracking is off in development.
 
-```text
-http://localhost:5173
-```
-
-## Build For Deployment
+To run the analytics functions locally, build the site and use Wrangler with a `.dev.vars` file (git-ignored) holding the variables below:
 
 ```powershell
-cd "C:\Users\Erick\portfolio0"
 npm run build
+npx wrangler pages dev
 ```
 
-The production files will be generated in:
+## Deployment (Cloudflare Pages)
 
-```text
-dist/
-```
+Every push to `master` deploys automatically.
 
-## Preview Production Build
+- Build command: `npm run build`
+- Build output directory: `dist`
+- `wrangler.toml` sets the Node compatibility flag the functions need.
 
-```powershell
-npm run preview
-```
+Secrets, set in Cloudflare under the Pages project's Settings > Variables and Secrets (type: Secret):
 
-## Content Updates
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Neon Postgres connection string. Tables are created automatically. |
+| `ADMIN_EMAIL` | Email used to sign in at `/admin`. |
+| `ADMIN_PASSWORD_HASH` | Output of `npm run hash-password -- "your password"`. Never store the plain password. |
+| `TOKEN_SECRET` | Random string that signs admin sessions. |
+| `IP_SALT` | Random string used when hashing visitor IPs. |
 
-Most visible portfolio content is now controlled in:
+Changing `ADMIN_PASSWORD_HASH` signs out every admin session.
 
-```text
-src/App.jsx
-```
+## Privacy
 
-Update these arrays to change the content:
+Visitor IP addresses are never stored, only a salted hash used to count unique visitors. Location (country and city) comes from Cloudflare. Visitors whose browser sends Do Not Track or Global Privacy Control are not tracked, and the site owner's own browser is excluded after signing in to `/admin`. Bots and crawlers are recorded but left out of every report.
 
-- `projects`
-- `work`
-- `skills`
-- `experience`
-- `education`
+## Updating content
 
-Update the visual design in:
-
-```text
-src/styles.css
-```
-
-## Profile Image
-
-The current profile image is:
-
-```text
-assets/img/passport-new.jpg
-```
-
-To change it, replace that file with your new photo and keep the same file name:
-
-```text
-passport-new.jpg
-```
-
-Recommended image style:
-
-- clear professional headshot
-- square image if possible
-- at least 600 x 600 pixels
-- JPG format
-
-## Existing Assets
-
-Only the images used by the React portfolio are kept in:
-
-```text
-assets/
-```
-
-The current CV link points to:
-
-```text
-assets/resume/Nimba_CV.pdf
-```
+- Projects, publications, skills, education, and certifications: the data arrays near the top of `src/App.jsx`.
+- CV: replace `public/Eric-John-Nimba-CV.pdf`, keeping the file name.
+- Profile photo: replace `assets/img/passport-new.jpg` (also used for social previews from `public/assets/img/passport-new.jpg`).
+- New pages or major content changes: update `public/sitemap.xml`.

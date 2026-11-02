@@ -77,8 +77,7 @@ class ApiError extends Error {
 
 async function api(path, { token, ...options } = {}) {
   const controller = new AbortController();
-  // A sleeping free Render service can take up to a minute to wake.
-  const timer = setTimeout(() => controller.abort(), 75000);
+  const timer = setTimeout(() => controller.abort(), 30000);
   try {
     const response = await fetch(`${analyticsUrl}${path}`, {
       ...options,
@@ -204,7 +203,7 @@ function Login({ onSignedIn, notice }) {
         )}
         {slow && (
           <p className="adm-info" role="status">
-            Waking up the analytics server. This can take up to a minute after a quiet period.
+            Still connecting. The database can take a few seconds to wake after a quiet period.
           </p>
         )}
         <button className="adm-primary" type="submit" disabled={status === 'submitting'}>
@@ -383,7 +382,7 @@ function Dashboard({ token, onSignOut }) {
   const exportCsv = async () => {
     setExporting(true);
     try {
-      const response = await api(`/api/admin/export.csv?range=${range}&tz=${encodeURIComponent(timeZone)}`, { token });
+      const response = await api(`/api/admin/export?range=${range}&tz=${encodeURIComponent(timeZone)}`, { token });
       const url = URL.createObjectURL(await response.blob());
       const link = document.createElement('a');
       link.href = url;
@@ -461,7 +460,7 @@ function Dashboard({ token, onSignOut }) {
         {!data ? (
           <p className="adm-loading" role="status">
             <span className="adm-spinner" aria-hidden="true" />
-            Loading analytics… the server may take up to a minute to wake.
+            Loading analytics…
           </p>
         ) : (
           <div className={`adm-content ${loading ? 'is-refreshing' : ''}`} aria-busy={loading}>
@@ -562,19 +561,6 @@ export default function AdminApp() {
     setNotice(message);
     setToken(null);
   }, []);
-
-  if (!analyticsUrl) {
-    return (
-      <div className="admin-shell">
-        <div className="adm-login">
-          <div className="adm-login-card">
-            <h1>Analytics not configured</h1>
-            <p className="adm-muted">Set VITE_ANALYTICS_URL for the site build and redeploy.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="admin-shell">

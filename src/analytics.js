@@ -1,6 +1,7 @@
-// Lightweight visit tracking for the portfolio. Events go to the analytics API (server/) as beacons,
-// so they never delay the page. Set VITE_ANALYTICS_URL at build time to enable it.
+// Lightweight visit tracking for the portfolio. Events go to the Cloudflare functions in functions/api
+// as beacons, so they never delay the page. VITE_ANALYTICS_URL can point local development at another host.
 export const analyticsUrl = (import.meta.env.VITE_ANALYTICS_URL || '').replace(/\/$/, '');
+const trackingEnabled = import.meta.env.PROD || Boolean(analyticsUrl);
 
 // Set on the admin's browser after signing in, so the owner's own visits are not counted.
 export const OWNER_OPT_OUT_KEY = 'ejn-analytics-owner';
@@ -115,7 +116,7 @@ function trackEngagement() {
 }
 
 export function initAnalytics() {
-  if (!analyticsUrl || isOptedOut()) return;
+  if (!trackingEnabled || isOptedOut()) return;
   visitorId = storedId(localStorage, 'ejn-visitor');
   sessionId = storedId(sessionStorage, 'ejn-session');
   enabled = true;

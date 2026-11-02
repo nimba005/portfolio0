@@ -57,3 +57,6 @@ temp/
 .wrangler/
 
 # Keep source files, selected public assets, and package-lock.json tracked.
+
+# Cloudflare local secrets
+.dev.vars

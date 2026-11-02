@@ -1,5 +1,3 @@
-import { pool } from './db.js';
-
 const RANGES = { today: 0, '7d': 7, '30d': 30, '90d': 90, '12m': 365, all: null };
 const DAY_MS = 24 * 60 * 60 * 1000;
 const visitorKey = 'COALESCE(visitor_id, ip_hash)';
@@ -13,21 +11,26 @@ function safeTimeZone(tz) {
   }
 }
 
-async function resolveRange(range, tz) {
+function readQuery(params) {
+  const range = Object.hasOwn(RANGES, params.get('range')) ? params.get('range') : '30d';
+  return { range, tz: safeTimeZone(params.get('tz') || 'Africa/Nairobi') };
+}
+
+async function resolveRange(db, range, tz) {
   const to = new Date();
   if (range === 'today') {
-    const { rows } = await pool.query(`SELECT date_trunc('day', now() AT TIME ZONE $1) AT TIME ZONE $1 AS start`, [tz]);
+    const { rows } = await db.query(`SELECT date_trunc('day', now() AT TIME ZONE $1) AT TIME ZONE $1 AS start`, [tz]);
     return { from: rows[0].start, to, bucket: 'hour' };
   }
   if (range === 'all') {
-    const { rows } = await pool.query(`SELECT min(created_at) AS first FROM events WHERE NOT is_bot`);
+    const { rows } = await db.query(`SELECT min(created_at) AS first FROM events WHERE NOT is_bot`);
     return { from: rows[0].first || new Date(to.getTime() - 7 * DAY_MS), to, bucket: 'day', open: true };
   }
   return { from: new Date(to.getTime() - RANGES[range] * DAY_MS), to, bucket: 'day' };
 }
 
-async function summary(from, to) {
-  const { rows } = await pool.query(
+async function summary(db, from, to) {
+  const { rows } = await db.query(
     `SELECT
        count(DISTINCT ${visitorKey})                    AS visitors,
        count(*) FILTER (WHERE type = 'pageview')        AS pageviews,
@@ -53,8 +56,8 @@ async function summary(from, to) {
   };
 }
 
-async function timeseries(from, to, bucket, tz) {
-  const { rows } = await pool.query(
+async function timeseries(db, from, to, bucket, tz) {
+  const { rows } = await db.query(
     `WITH buckets AS (
        SELECT generate_series(
          date_trunc($4, $1::timestamptz AT TIME ZONE $3),
@@ -79,8 +82,8 @@ async function timeseries(from, to, bucket, tz) {
   return rows.map((row) => ({ t: row.t, visitors: Number(row.visitors), pageviews: Number(row.pageviews) }));
 }
 
-async function top(from, to, { select, groupBy = '1', where = 'TRUE', metric = `count(DISTINCT ${visitorKey})`, limit = 10 }) {
-  const { rows } = await pool.query(
+async function top(db, from, to, { select, groupBy = '1', where = 'TRUE', metric = `count(DISTINCT ${visitorKey})`, limit = 10 }) {
+  const { rows } = await db.query(
     `SELECT ${select}, ${metric} AS value
      FROM events
      WHERE NOT is_bot AND created_at >= $1 AND created_at < $2 AND ${where}
@@ -92,8 +95,8 @@ async function top(from, to, { select, groupBy = '1', where = 'TRUE', metric = `
   return rows.map((row) => ({ ...row, value: Number(row.value) }));
 }
 
-async function recentSessions(from, to) {
-  const { rows } = await pool.query(
+async function recentSessions(db, from, to) {
+  const { rows } = await db.query(
     `SELECT session_id,
             min(created_at) AS started_at,
             max(created_at) AS last_seen,
@@ -123,34 +126,22 @@ async function recentSessions(from, to) {
   }));
 }
 
-export async function getStats(query) {
-  const range = Object.hasOwn(RANGES, query.range) ? query.range : '30d';
-  const tz = safeTimeZone(query.tz || 'Africa/Nairobi');
-  const { from, to, bucket, open } = await resolveRange(range, tz);
+// Queries run one after another: a Workers request has a single database connection.
+export async function getStats(db, params) {
+  const { range, tz } = readQuery(params);
+  const { from, to, bucket, open } = await resolveRange(db, range, tz);
   const previousFrom = new Date(from.getTime() - (to.getTime() - from.getTime()));
 
-  const [current, previous, series, live, bots, countries, cities, sections, downloads, outbound, referrers, devices, browsers, systems, recent] =
-    await Promise.all([
-      summary(from, to),
-      open ? null : summary(previousFrom, from),
-      timeseries(from, to, bucket, tz),
-      pool.query(`SELECT count(DISTINCT ${visitorKey}) AS n FROM events WHERE NOT is_bot AND created_at > now() - interval '5 minutes'`),
-      pool.query(`SELECT count(DISTINCT ${visitorKey}) AS n FROM events WHERE is_bot AND created_at >= $1 AND created_at < $2`, [from, to]),
-      top(from, to, { select: 'country AS label', where: 'country IS NOT NULL' }),
-      top(from, to, { select: 'city AS label, country', groupBy: '1, 2', where: "city IS NOT NULL AND city <> ''" }),
-      top(from, to, { select: 'label', where: "type = 'section'", metric: 'count(DISTINCT session_id)' }),
-      top(from, to, { select: 'label', where: "type = 'download'", metric: 'count(*)' }),
-      top(from, to, { select: 'label', where: "type = 'outbound'", metric: 'count(*)' }),
-      top(from, to, {
-        select: "COALESCE(referrer_host, 'Direct') AS label",
-        where: "type = 'pageview'",
-        metric: 'count(DISTINCT session_id)',
-      }),
-      top(from, to, { select: 'device AS label', where: "type = 'pageview' AND device IS NOT NULL" }),
-      top(from, to, { select: 'browser AS label', where: "type = 'pageview' AND browser IS NOT NULL" }),
-      top(from, to, { select: 'os AS label', where: "type = 'pageview' AND os IS NOT NULL" }),
-      recentSessions(from, to),
-    ]);
+  const current = await summary(db, from, to);
+  const previous = open ? null : await summary(db, previousFrom, from);
+  const series = await timeseries(db, from, to, bucket, tz);
+  const live = await db.query(
+    `SELECT count(DISTINCT ${visitorKey}) AS n FROM events WHERE NOT is_bot AND created_at > now() - interval '5 minutes'`,
+  );
+  const bots = await db.query(
+    `SELECT count(DISTINCT ${visitorKey}) AS n FROM events WHERE is_bot AND created_at >= $1 AND created_at < $2`,
+    [from, to],
+  );
 
   return {
     range,
@@ -163,16 +154,20 @@ export async function getStats(query) {
     activeNow: Number(live.rows[0].n),
     botVisitors: Number(bots.rows[0].n),
     series,
-    countries,
-    cities,
-    sections,
-    downloads,
-    outbound,
-    referrers,
-    devices,
-    browsers,
-    systems,
-    recent,
+    countries: await top(db, from, to, { select: 'country AS label', where: 'country IS NOT NULL' }),
+    cities: await top(db, from, to, { select: 'city AS label, country', groupBy: '1, 2', where: "city IS NOT NULL AND city <> ''" }),
+    sections: await top(db, from, to, { select: 'label', where: "type = 'section'", metric: 'count(DISTINCT session_id)' }),
+    downloads: await top(db, from, to, { select: 'label', where: "type = 'download'", metric: 'count(*)' }),
+    outbound: await top(db, from, to, { select: 'label', where: "type = 'outbound'", metric: 'count(*)' }),
+    referrers: await top(db, from, to, {
+      select: "COALESCE(referrer_host, 'Direct') AS label",
+      where: "type = 'pageview'",
+      metric: 'count(DISTINCT session_id)',
+    }),
+    devices: await top(db, from, to, { select: 'device AS label', where: "type = 'pageview' AND device IS NOT NULL" }),
+    browsers: await top(db, from, to, { select: 'browser AS label', where: "type = 'pageview' AND browser IS NOT NULL" }),
+    systems: await top(db, from, to, { select: 'os AS label', where: "type = 'pageview' AND os IS NOT NULL" }),
+    recent: await recentSessions(db, from, to),
   };
 }
 
@@ -186,15 +181,17 @@ function csvCell(value) {
   return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
-export async function exportCsv(query) {
-  const range = Object.hasOwn(RANGES, query.range) ? query.range : '30d';
-  const tz = safeTimeZone(query.tz || 'Africa/Nairobi');
-  const { from, to } = await resolveRange(range, tz);
-  const { rows } = await pool.query(
+export async function exportCsv(db, params) {
+  const { range, tz } = readQuery(params);
+  const { from, to } = await resolveRange(db, range, tz);
+  const { rows } = await db.query(
     `SELECT ${CSV_COLUMNS.join(', ')} FROM events
      WHERE NOT is_bot AND created_at >= $1 AND created_at < $2
      ORDER BY created_at DESC LIMIT 100000`,
     [from, to],
   );
-  return [CSV_COLUMNS.join(','), ...rows.map((row) => CSV_COLUMNS.map((column) => csvCell(row[column])).join(','))].join('\n');
+  return {
+    range,
+    csv: [CSV_COLUMNS.join(','), ...rows.map((row) => CSV_COLUMNS.map((column) => csvCell(row[column])).join(','))].join('\n'),
+  };
 }
